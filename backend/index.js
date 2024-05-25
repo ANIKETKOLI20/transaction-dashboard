@@ -50,12 +50,9 @@ app.get("/search/:key", async (req, res) => {
 app.get('/stats/:month', async (req, res) => {
   try {
     const month = req.params.month;
-    if (!month) {
-      return res.status(400).json({ error: "Month is required" });
-    }
-
-    const monthIndex = new Date(`${month} 1, 2000`).getMonth();
+    console.log(`Fetching stats for month: ${month}`);
     
+    const monthIndex = new Date(`${month} 1, 2000`).getMonth();
     const products = await Product.find();
     
     const filteredProducts = products.filter(product => {
@@ -67,12 +64,15 @@ app.get('/stats/:month', async (req, res) => {
     const totalSoldItems = filteredProducts.filter(product => product.sold).length;
     const totalNotSoldItems = filteredProducts.length - totalSoldItems;
 
+    console.log({ totalSaleAmount, totalSoldItems, totalNotSoldItems });
+    
     res.json({ totalSaleAmount, totalSoldItems, totalNotSoldItems });
   } catch (error) {
-    console.error("Error fetching statistics:", error);
+    console.error("Error fetching statistics: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // Filter products by month
 app.get('/products/:month', async (req, res) => {

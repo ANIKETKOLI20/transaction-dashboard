@@ -44,23 +44,26 @@ function Dashboard() {
   const handleSearch = async (searchedInput) => {
     try {
       if (searchedInput) {
-        const result = await axios.get(`https://transaction-dashboard-4.onrender.com/${searchedInput}`);
+        const result = await axios.get(`https://transaction-dashboard-4.onrender.com/search/${searchedInput}`);
         setData(result.data);
       } else {
         fetchProducts(selectedMonth); // Fetch products for the selected month if search input is empty
       }
     } catch (error) {
       console.error("Error searching products:", error);
+      // Display a message to the user indicating search failure
+      // Possibly clear existing data or handle the error in another way
     }
   };
-
+  
   const handleMonthChange = (value) => {
     setSelectedMonth(value);
   };
 
   const fetchStats = async (month) => {
     try {
-      const response = await axios.get(`https://transaction-dashboard-4.onrender.com/${month}`);
+      const response = await axios.get(`https://transaction-dashboard-4.onrender.com/stats/${month}`);
+      console.log("Fetched stats: ", response.data);  // Log fetched data for debugging
       setStats(response.data);
     } catch (error) {
       console.error("Error fetching statistics: ", error);
