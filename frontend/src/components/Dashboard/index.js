@@ -31,7 +31,8 @@ function Dashboard() {
 
   const fetchProducts = async (month) => {
     try {
-      const response = await axios.get(`https://transaction-dashboard-4.onrender.com/${month}`);
+      const response = await axios.get(`https://transaction-dashboard-4.onrender.com/products/${month}`);
+      console.log("Fetched products: ", response.data);
       setData(response.data);
       setLoading(false);
     } catch (error) {
