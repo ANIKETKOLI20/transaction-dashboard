@@ -31,7 +31,7 @@ function Dashboard() {
 
   const fetchProducts = async (month) => {
     try {
-      const response = await axios.get(`http://localhost:5000/products/${month}`);
+      const response = await axios.get(`https://transaction-dashboard-4.onrender.com/${month}`);
       setData(response.data);
       setLoading(false);
     } catch (error) {
@@ -43,7 +43,7 @@ function Dashboard() {
   const handleSearch = async (searchedInput) => {
     try {
       if (searchedInput) {
-        const result = await axios.get(`http://localhost:5000/search/${searchedInput}`);
+        const result = await axios.get(`https://transaction-dashboard-4.onrender.com/${searchedInput}`);
         setData(result.data);
       } else {
         fetchProducts(selectedMonth); // Fetch products for the selected month if search input is empty
@@ -59,7 +59,7 @@ function Dashboard() {
 
   const fetchStats = async (month) => {
     try {
-      const response = await axios.get(`http://localhost:5000/stats/${month}`);
+      const response = await axios.get(`https://transaction-dashboard-4.onrender.com/${month}`);
       setStats(response.data);
     } catch (error) {
       console.error("Error fetching statistics: ", error);
@@ -68,7 +68,7 @@ function Dashboard() {
 
   const fetchPieData = async (month) => {
     try {
-      const response = await axios.get(`http://localhost:5000/pie-chart/${month}`);
+      const response = await axios.get(`https://transaction-dashboard-4.onrender.com/pie-chart/${month}`);
       setPieData(response.data);
     } catch (error) {
       console.error("Error fetching pie chart data: ", error);
