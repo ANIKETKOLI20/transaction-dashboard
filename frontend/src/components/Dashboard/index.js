@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Input, Empty, Select, Statistic, Row, Col } from 'antd';
+import { Table, Input, Empty, Select, Statistic, Row, Col, Spin } from 'antd';
 import axios from "axios";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -30,6 +30,7 @@ function Dashboard() {
   }, [selectedMonth]);
 
   const fetchProducts = async (month) => {
+    setLoading(true);
     try {
       const response = await axios.get(`https://transaction-dashboard-4.onrender.com/products/${month}`);
       console.log("Fetched products: ", response.data);
@@ -42,6 +43,7 @@ function Dashboard() {
   };
 
   const handleSearch = async (searchedInput) => {
+    setLoading(true);
     try {
       if (searchedInput) {
         const result = await axios.get(`https://transaction-dashboard-4.onrender.com/search/${searchedInput}`);
@@ -54,6 +56,7 @@ function Dashboard() {
       // Display a message to the user indicating search failure
       // Possibly clear existing data or handle the error in another way
     }
+    setLoading(false);
   };
   
   const handleMonthChange = (value) => {
@@ -69,7 +72,7 @@ function Dashboard() {
       console.error("Error fetching statistics: ", error);
     }
   };
-
+  
   const fetchPieData = async (month) => {
     try {
       const response = await axios.get(`https://transaction-dashboard-4.onrender.com/pie-chart/${month}`);
@@ -170,45 +173,47 @@ function Dashboard() {
           <Statistic title="Total Not Sold Items" value={stats.totalNotSoldItems} />
         </Col>
       </Row>
-      {data.length > 0 ? (
-        <Table 
-          columns={columns} 
-          dataSource={data} 
-          loading={loading} 
-          rowKey="id" 
-          pagination={{ pageSize: 10 }} 
-          size="middle" 
-          bordered 
-        />
-      ) : (
-        <Empty description="No products found" />
-      )}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        {pieData.length > 0 ? (
-          <ResponsiveContainer width={400} height={400}>
-            <PieChart>
-              <Pie
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                outerRadius={150}
-                fill="#8884d8"
-                dataKey="count"
-              >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+      <Spin spinning={loading} tip="Loading...">
+        {data.length > 0 ? (
+          <Table 
+            columns={columns} 
+            dataSource={data} 
+            loading={loading} 
+            rowKey="id" 
+            pagination={{ pageSize: 10 }} 
+            size="middle" 
+            bordered 
+          />
         ) : (
-          <Empty description="No data for pie chart" />
+          <Empty description="No products found" />
         )}
-      </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+          {pieData.length > 0 ? (
+            <ResponsiveContainer width={400} height={400}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={150}
+                  fill="#8884d8"
+                  dataKey="count"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <Empty description="No data for pie chart" />
+          )}
+        </div>
+      </Spin>
     </div>
   );
 }
